@@ -1,0 +1,5 @@
+br\com\tdrinfo\Converter.class
+br\com\tdrinfo\FieldType.class
+br\com\tdrinfo\annotations\LabelName.class
+br\com\tdrinfo\MyClass.class
+br\com\tdrinfo\MyField.class
