@@ -4,6 +4,8 @@ import br.com.tdrinfo.annotations.ConvertField;
 
 import javax.persistence.Column;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.lang.annotation.Annotation;
@@ -77,6 +79,10 @@ public class Converter {
                     } else if (annotation instanceof ManyToOne && !((ManyToOne) annotation).optional()) {
                         myField.setRequired(true);
                     } else if (annotation instanceof NotNull) {
+                        myField.setRequired(true);
+                    } else if (annotation instanceof NotEmpty) {
+                        myField.setRequired(true);
+                    } else if (annotation instanceof NotBlank) {
                         myField.setRequired(true);
                     } else if (annotation instanceof Size) {
                         myField.setMinLength(((Size) annotation).min());
