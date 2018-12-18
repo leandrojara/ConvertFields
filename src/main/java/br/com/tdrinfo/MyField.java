@@ -32,7 +32,7 @@ public class MyField {
     /**
      * Define a quantidade mínima de caracteres
      */
-    private int minLength = 0;
+    private long minLength = 0L;
     /**
      * Define a quantidade máxima de caracteres
      */
@@ -41,6 +41,14 @@ public class MyField {
      * Define se a informação é obrigatoria
      */
     private boolean required = false;
+    /**
+     * Define o width do campo
+     */
+    private int percentWidth;
+    /**
+     * Define a URI que o campo de pesquisa deverá chamar, caso o fieldType seja do tipo FieldType.OBJECT
+     */
+    private String searchURI;
 
     public String getFieldName() {
         return fieldName;
@@ -74,11 +82,11 @@ public class MyField {
         this.fieldType = fieldType;
     }
 
-    public int getMinLength() {
+    public long getMinLength() {
         return minLength;
     }
 
-    public void setMinLength(int minLength) {
+    public void setMinLength(long minLength) {
         this.minLength = minLength;
     }
 
@@ -96,5 +104,21 @@ public class MyField {
 
     public void setRequired(boolean required) {
         this.required = required;
+    }
+
+    public int getPercentWidth() {
+        return percentWidth;
+    }
+
+    public void setPercentWidth(int percentWidth) {
+        this.percentWidth = percentWidth;
+    }
+
+    public String getSearchURI() {
+        return searchURI;
+    }
+
+    public void setSearchURI(String searchURI) {
+        this.searchURI = searchURI;
     }
 }

@@ -5,13 +5,17 @@ package br.com.tdrinfo.annotations;
  * TDR Informática Ltda
  * Todos os direitos reservados ©
  * ***********************************************
- * Nome do arquivo: LabelName.java
+ * Nome do arquivo: ConvertField.java
  * Criado por : Leandro de Souza Jara
  * Data da criação : 17/12/2018
- * Observação : esta anotação deve ser utilizada para definir o texto que será exibido no label do campo no front-end
+ * Observação :
  * ***********************************************
  */
-public @interface LabelName {
+public @interface ConvertField {
 
-    public String value() default "";
+    public String labelName() default "";
+
+    public int percentWidth() default 100;
+
+    public String searchURI();
 }

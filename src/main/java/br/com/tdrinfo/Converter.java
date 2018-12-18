@@ -1,10 +1,10 @@
 package br.com.tdrinfo;
 
-import br.com.tdrinfo.annotations.LabelName;
-import com.sun.istack.internal.NotNull;
+import br.com.tdrinfo.annotations.ConvertField;
 
 import javax.persistence.Column;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -67,8 +67,10 @@ public class Converter {
                 }
 
                 for (Annotation annotation : field.getDeclaredAnnotations()) {
-                    if (annotation instanceof LabelName) {
-                        myField.setLabelName(((LabelName) annotation).value());
+                    if (annotation instanceof ConvertField) {
+                        myField.setLabelName(((ConvertField) annotation).labelName());
+                        myField.setPercentWidth(((ConvertField) annotation).percentWidth());
+                        myField.setSearchURI(((ConvertField) annotation).searchURI());
                     } else if (annotation instanceof Column && !((Column) annotation).nullable()) {
                         myField.setRequired(true);
                     } else if (annotation instanceof ManyToOne && !((ManyToOne) annotation).optional()) {
