@@ -5,6 +5,7 @@ import br.com.tdrinfo.annotations.ConvertField;
 import javax.persistence.Column;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -77,6 +78,9 @@ public class Converter {
                         myField.setRequired(true);
                     } else if (annotation instanceof NotNull) {
                         myField.setRequired(true);
+                    } else if (annotation instanceof Size) {
+                        myField.setMinLength(((Size) annotation).min());
+                        myField.setMaxLength(((Size) annotation).max());
                     }
                 }
 
