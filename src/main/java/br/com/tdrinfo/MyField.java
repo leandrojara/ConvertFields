@@ -5,10 +5,10 @@ package br.com.tdrinfo;
  * TDR Informática Ltda
  * Todos os direitos reservados ©
  * ***********************************************
- * Nome do arquivo: ObjTeste.java
+ * Nome do arquivo: MyField.java
  * Criado por : Leandro de Souza Jara
  * Data da criação : 17/12/2018
- * Observação :
+ * Observação : essa classe define a estrutura de um field pertencente a uma classe
  * ***********************************************
  */
 public class MyField {

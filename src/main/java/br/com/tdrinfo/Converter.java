@@ -1,6 +1,7 @@
 package br.com.tdrinfo;
 
 import br.com.tdrinfo.annotations.LabelName;
+import com.sun.istack.internal.NotNull;
 
 import javax.persistence.Column;
 import javax.persistence.ManyToOne;
@@ -19,11 +20,17 @@ import java.util.List;
  * Nome do arquivo: Converter.java
  * Criado por : Leandro de Souza Jara
  * Data da criação : 17/12/2018
- * Observação :
+ * Observação : classe responsável por transformar um objeto ou uma lista de objetos em objetos que possam ser
+ * usados para gerar um layout automático no front-end, e também fazer o caminho contrário
  * ***********************************************
  */
 public class Converter {
 
+    /**
+     * @param list  recebe uma lista de objetos
+     * @param clazz tipo de classe da list
+     * @return lista do tipo MyClass
+     */
     public static List<MyClass> build(List list, Class clazz) {
         if (list != null && clazz != null) {
             List<MyClass> myClasses = new ArrayList<MyClass>();
@@ -35,6 +42,11 @@ public class Converter {
         return null;
     }
 
+    /**
+     * @param obj   recebe um objeto
+     * @param clazz recebe o tipo de classe do obj
+     * @return objeto do tipo MyClass
+     */
     public static MyClass build(Object obj, Class clazz) {
         if (obj != null && clazz != null) {
             MyClass myClass = new MyClass();
@@ -44,6 +56,7 @@ public class Converter {
             for (Field field : clazz.getDeclaredFields()) {
                 MyField myField = new MyField();
                 myField.setFieldName(field.getName());
+                myField.setFieldType(FieldType.OBJECT);
 
                 for (FieldType fieldType : FieldType.values()) {
                     for (Class classe : fieldType.getClasses()) {
@@ -53,17 +66,15 @@ public class Converter {
                     }
                 }
 
-                if (myField.getFieldType() == null) {
-                    myField.setFieldType(FieldType.OBJECT);
-                }
-
                 for (Annotation annotation : field.getDeclaredAnnotations()) {
                     if (annotation instanceof LabelName) {
                         myField.setLabelName(((LabelName) annotation).value());
-                    } else if (annotation instanceof Column) {
-                        myField.setRequired(!((Column) annotation).nullable());
-                    } else if (annotation instanceof ManyToOne) {
-                        myField.setRequired(!((ManyToOne) annotation).optional());
+                    } else if (annotation instanceof Column && !((Column) annotation).nullable()) {
+                        myField.setRequired(true);
+                    } else if (annotation instanceof ManyToOne && !((ManyToOne) annotation).optional()) {
+                        myField.setRequired(true);
+                    } else if (annotation instanceof NotNull) {
+                        myField.setRequired(true);
                     }
                 }
 
@@ -95,6 +106,49 @@ public class Converter {
                 myClass.getFields().add(myField);
             }
             return myClass;
+        }
+        return null;
+    }
+
+    public static List unbuild(List<MyClass> list) {
+        if (list != null && !list.isEmpty()) {
+            List<Object> retorno = new ArrayList<Object>();
+            for (MyClass myClass : list) {
+                retorno.add(unbuild(myClass));
+            }
+            return retorno;
+        }
+        return null;
+    }
+
+    public static Object unbuild(MyClass myClass) {
+        try {
+            Class clazz = Class.forName(myClass.getClassName());
+            Object obj = clazz.newInstance();
+
+            for (MyField myField : myClass.getFields()) {
+                for (Method method : clazz.getDeclaredMethods()) {
+                    if (method.getName().equalsIgnoreCase("set" + myField.getFieldName())) {
+                        if (!myField.getFieldType().equals(FieldType.OBJECT) && !myField.getFieldType().equals(FieldType.LIST)) {
+                            method.invoke(obj, myField.getFieldValue());
+                        } else if (myField.getFieldType().equals(FieldType.OBJECT)) {
+                            method.invoke(obj, unbuild((MyClass) myField.getFieldValue()));
+                        } else if (myField.getFieldType().equals(FieldType.LIST)) {
+                            method.invoke(obj, unbuild((List<MyClass>) myField.getFieldValue()));
+                        }
+                    }
+                }
+            }
+
+            return obj;
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
         }
         return null;
     }
